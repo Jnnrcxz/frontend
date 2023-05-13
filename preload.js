@@ -1,7 +1,12 @@
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron');
+const Toastify = require('toastify-js');
 
 contextBridge.exposeInMainWorld('axios', {
   openAI: (sentence) => ipcRenderer.invoke('axios.openAI',sentence),
   
-  // we can also expose variables, not just functions
-})
+});
+
+contextBridge.exposeInMainWorld('Toastify', {
+  showToast: (options) => Toastify(options).showToast()
+  
+});

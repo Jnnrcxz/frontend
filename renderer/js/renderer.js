@@ -5,10 +5,30 @@ if (form) {
 
         const formData = new FormData(form);
 
-       // console.log(formData.get("sentence")); 
+        let sentence = formData.get("sentence"); 
+        if (sentence.length <= 5) {
+           alertMessage("error","Tarungang input limit ang 8 words");
 
-
+            return;
+        }
+       //console.log(formData.get("sentence")); 
         const response = await window.axios.openAI(formData.get("sentence"));
         document.getElementById("sentence_corrected").innerHTML = JSON.stringify(response.choices[0].text).replace(/\\n/g, '');
-        }
-    };
+        };
+    }
+
+    function alertMessage(status, sentence){
+        window.Toastify.showToast({
+            text: sentence,
+            duration: 5000,
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: status == "error" ? "linear-gradient(to right, pink, blue)" : "green",
+                textAlign: "center",
+                padding: "5px",
+                marginTop: "5px",
+                color: "white",
+                
+         }
+        });
+    }

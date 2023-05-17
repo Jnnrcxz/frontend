@@ -10,25 +10,40 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <title>I'm TiboySky your AI answerer</title>
+    <title>Electron.JS - I'm TiboySky your AI answerer</title>
+    <link href="./css/bootstrap/bootstrap.min.css" rel="stylesheet">
   </head>
 
-  <body>
-    <h1>Sodana</h1>
+  <body class="bg-primary bg-opacity-50">
 
-    <div>
-      <form id="form_sentence">
-        <label for="sentence">Pangutan'a ko:</label><br>
-        <textarea name="sentence" rows="4"></textarea><br>
-        <input type="submit" value="Submit" />
-      </form>
-      <br>
-      <div>
-        <label for="sentence_corrected">Diara ang tubag saimong pangutana:</label><br>
-        <textarea id="sentence_corrected" rows="4" readonly></textarea>
+    <div class="container mt-3 p-3">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card shadow-lg bg-light rounded-lg border-0">
+            <div class="card-header bg-primary text-white pt-3">
+              <h1 class="text-center display-4 font-weight-bold">Grammar Corrector</h1>
+            </div>
+            <div class="card-body bg-white pt-4">
+              <form id="form_sentence">
+                <div class="form-group">
+                  <label for="sentence" class="font-weight-bold">Enter Message:</label>
+                  <textarea class="form-control mt-3 mb-2" name="sentence" rows="4" placeholder="Type your message here."></textarea>
+                </div>
+                <div class="form-group text-center mb-4">
+                  <button type="submit" class="btn btn-primary mt-3 px-5 rounded-pill">Submit</button>
+                </div>
+              </form>
+              <div class="form-group">
+                <label for="sentence_corrected" class="font-weight-bold">Corrected Grammar:</label>
+                <textarea class="form-control mt-3 mb-3" id="sentence_corrected" rows="4" readonly></textarea>
+              </div>
+            </div>            
+          </div>
+        </div>
       </div>
     </div>
+    
+    <script src="./js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="./js/renderer.js"></script>
   </body>
-
-  <script src="./js/renderer.js"></script>
 </html>

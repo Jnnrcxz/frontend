@@ -1,14 +1,117 @@
 //Imported Modules
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const axios = require('axios');
 const dotenv = require('dotenv').config();
 
-//Main window
+//Global Variables
 const isDev = true;
 
+const isMac = process.platform === 'darwin'
+
+const template = [
+  // { role: 'appMenu' }
+  ...(isMac ? [{
+    label: app.name,
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  }] : []),
+  // { role: 'fileMenu' }
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'About',
+        click: aboutWindow
+      },
+      isMac ? { role: 'close' } : { role: 'quit' }
+    ]
+  },
+  // { role: 'editMenu' }
+  {
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      ...(isMac ? [
+        { role: 'pasteAndMatchStyle' },
+        { role: 'delete' },
+        { role: 'selectAll' },
+        { type: 'separator' },
+        {
+          label: 'Speech',
+          submenu: [
+            { role: 'startSpeaking' },
+            { role: 'stopSpeaking' }
+          ]
+        }
+      ] : [
+        { role: 'delete' },
+        { type: 'separator' },
+        { role: 'selectAll' }
+      ])
+    ]
+  },
+  // { role: 'viewMenu' }
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  // { role: 'windowMenu' }
+  {
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      ...(isMac ? [
+        { type: 'separator' },
+        { role: 'front' },
+        { type: 'separator' },
+        { role: 'window' }
+      ] : [
+        { role: 'close' }
+      ])
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Learn More',
+        click: async () => {
+          const { shell } = require('electron')
+          await shell.openExternal('https://electronjs.org')
+        }
+      }
+    ]
+  }
+]
+//Main window
 const createWindow = () => {
-  const win = new BrowserWindow({
+  const main = new BrowserWindow({
     width: isDev ? 1200 : 600,
     height: 600,
     webPreferences: {
@@ -18,14 +121,30 @@ const createWindow = () => {
     },
   });
 
-  win.webContents.openDevTools();
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 
-  win.loadFile(path.join(__dirname, "./renderer/index.html"));
+  if(isDev) {
+    main.webContents.openDevTools();
+    }
+
+    main.loadFile(path.join(__dirname, "./renderer/index.html"));
+};
+
+function aboutWindow () {
+  const about = new BrowserWindow({
+    width:  400,
+    height: 400,
+    alwaysOnTop: true,
+  });
+    about.setMenuBarVisibility(false);
+    about.loadFile(path.join(__dirname, "./renderer/about.html"));
 }
 
 app.whenReady().then(() => {
   //Initialize Functions
   ipcMain.handle('axios.openAI', openAI )
+  //Create Window
   createWindow()
 
   app.on('activate', () => {

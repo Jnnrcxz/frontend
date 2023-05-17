@@ -7,7 +7,7 @@ if (form) {
 
         let sentence = formData.get("sentence"); 
         if (sentence.length <= 5) {
-           alertMessage("error","Tarungang input limit ang 8 words");
+           alertMessage("error","Invalid Input");
 
             return;
         }
